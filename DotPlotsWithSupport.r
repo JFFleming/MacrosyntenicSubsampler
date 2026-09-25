@@ -14,7 +14,7 @@ my_orthologs <- load_orthologs(
   )
 )
 
-# Load overlay table containing the jackknife support values
+# Load overlay table containing the subsample support values
 overlay_df <- read.table(
     "Unique.Significant.tsv",
     sep = "\t",
@@ -47,7 +47,7 @@ my_macrosynteny <- compute_macrosynteny(my_orthologs)
 write.table(my_macrosynteny, sep="\t", file="Test_Table.tsv")
 p3 <- plot_macrosynteny(my_macrosynteny)
 
-# Add the jackknife support values as labels
+# Add the support values as labels
 p3 <- p3 +
     geom_text(
         data = overlay_df,
