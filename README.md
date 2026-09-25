@@ -1,11 +1,11 @@
-# The Macrosyntenic Jackknife #
+# The Macrosyntenic Subsampler #
 
 ## Introduction ##
 
 This project is a shell script that serves as a wrapper for three R scripts, two of which are directly derived from the currently available package MacroSyntR, available here:
 https://github.com/SamiLhll/macrosyntR/tree/master
 
-The Macrosyntenic Jackknife creates 100 jackknife samples of a target input ortholog table, then uses MacrosyntR to assess the robusticity of macrosyntenic inferences. It then pastes these jackknife robusticity values onto an Oxford dot plot of the complete dataset, allowing users to visualise the robusticity of inferences of macrosynteny across their dataset in an accessible way.
+The Macrosyntenic Subsampler creates 100 subsamples of a target input ortholog table, then uses MacrosyntR to assess the robusticity of macrosyntenic inferences. It then pastes these robusticity values onto an Oxford dot plot of the complete dataset, allowing users to visualise the robusticity of inferences of macrosynteny across their dataset in an accessible way.
 
 The mathematics and philosophy behind this process are explored in our manuscript in more detail here 
 
@@ -13,38 +13,38 @@ The mathematics and philosophy behind this process are explored in our manuscrip
 
 The scripts contained in here are (in order of intended use):
 - GetSeeds.r: this RScript obtains a list of 100 randomly generated seeds for use in the subsampling process. This ensures that subsamples are repeatable.
-- MacrosyntenicJackknife.sh: This shell script uses the seed file to generate 100 subsample datasets, then calls the R script TestSignificance.R (discussed below) to assess each dataset.
-- TestSignificance.r: The is the standard MacroSyntR script. Here it is called by the MacrosyntenicJackknife to calculate significant pairs for each subsampled dataset.
-- DotPlotsWithSupport.r: This RScript is a modificated of the standard MacroSyntR script, intended for use on the original, unsampled dataset. It calculates the Oxford grid and Oxford dot plots as in the original MacroSyntR script, and then takes the information provided in Unique.Significant.tsv to overlay the support values determined by the jackknife analysis.
+- MacrosyntenicSubsampler.sh: This shell script uses the seed file to generate 100 subsample datasets, then calls the R script TestSignificance.R (discussed below) to assess each dataset.
+- TestSignificance.r: The is the standard MacroSyntR script. Here it is called by the MacrosyntenicSubsampler to calculate significant pairs for each subsampled dataset.
+- DotPlotsWithSupport.r: This RScript is a modificated of the standard MacroSyntR script, intended for use on the original, unsampled dataset. It calculates the Oxford grid and Oxford dot plots as in the original MacroSyntR script, and then takes the information provided in Unique.Significant.tsv to overlay the support values determined by the subsample analysis.
   
 Provided in the example folder are three files. These are the same example files used in MacroSyntR (https://github.com/SamiLhll/macrosyntR/tree/master):
 - Bflo.bed
 - Pyes.bed - A list of bed 
 - Bflo_vs_Pyes.tab - A tab-seperated table matching the orthologs in the two bed files
-These are the three core files that form the input for the Macrosyntenic Jackknife. To replace them with your own bed and tab files, change the input values in the R scripts DotPlotsWithSupport.r and TestSignificance.r to the relevant .bed files, and use the appropriate tab file as the input for Subsample.PresentationQuality.sh
+These are the three core files that form the input for the Macrosyntenic Subsampler. To replace them with your own bed and tab files, change the input values in the R scripts DotPlotsWithSupport.r and TestSignificance.r to the relevant .bed files, and use the appropriate tab file as the input for Subsample.PresentationQuality.sh
 
 
 ## How to ##
 
-To run the MacroSyntenic Jackknife, first run GetSeeds.r, which requires no other inputs. 
+To run the MacroSyntenic Subsampler, first run GetSeeds.r, which requires no other inputs. 
 
 ```
 Rscript GetSeeds.r
 ```
 
-This creates seeds.txt, a file of 100 randomly generated seeds that allow each jackknife subsample to be regenerated. This will be automatically used in the next step, MacrosyntenicJackknife.sh.
+This creates seeds.txt, a file of 100 randomly generated seeds that allow each subsample to be regenerated. This will be automatically used in the next step, MacrosyntenicSubsampler.sh.
 
 ```
-bash MacrosyntenicJackknife.sh <Input File> <Output Prefix> [Subsample Size]
+bash MacrosyntenicSubsampler.sh <Input File> <Output Prefix> [Subsample Size]
 ```
 
-For MacrosyntenicJackknife.sh, the input file is the ortholog table - a file like Bflo_vs_Pyes.tab in the Example folder. The Output Prefix can be anything you would like. The final input options, Subsample Size, is completely optional. This determines the size of each subsampled dataset. By default, if no value is entered here, it will be half the size of the ortholog table. This results in an input like this:
+For MacrosyntenicSubsampler.sh, the input file is the ortholog table - a file like Bflo_vs_Pyes.tab in the Example folder. The Output Prefix can be anything you would like. The final input options, subsample size, is completely optional. This determines the size of each subsampled dataset. By default, if no value is entered here, it will be half the size of the ortholog table. This results in an input like this:
 ```
-bash MacrosyntenicJackknife.sh Bflo_vs_Pyes.tab BfloPyes
+bash MacrosyntenicSubsampler.sh Bflo_vs_Pyes.tab BfloPyes
 ```
 or
 ```
-bash MacrosyntenicJackknife.sh Bflo_vs_Pyes.tab BfloPyes 1807
+bash MacrosyntenicSubsampler.sh Bflo_vs_Pyes.tab BfloPyes 1807
 ```
 if you would like to specify the size of the subsample.
 
